@@ -13,14 +13,36 @@ ENV RUMPRUN_CC=rumprun-cc \
   LUA_LIB=/usr/local/lib \
   LUA_INC=/usr/local/include \
   DEVEL_KIT_PATH=/usr/src/rump-nginx-lua/ngx_devel_kit-0.2.19 \
-  LUA_MOD_PATH=/usr/src/rump-nginx-lua/lua-nginx-module-0.9.15 \
+  LUA_MOD_PATH=/usr/src/rump-nginx-lua/lua-nginx-module-0.9.16 \
   PCRE_PATH=/usr/src/rump-nginx-lua/pcre-8.37
 
+# make uname the NetBSD one
+RUN cd /usr/local/bin && ln -s rump.uname uname
+
 RUN \
+  curl http://nginx.org/download/nginx-1.9.2.tar.gz | tar xfz - && \
   curl https://codeload.github.com/simpl/ngx_devel_kit/tar.gz/v0.2.19 | tar xzf - && \
-  curl https://codeload.github.com/openresty/lua-nginx-module/tar.gz/v0.9.15 | tar xzf - && \
+  curl https://codeload.github.com/openresty/lua-nginx-module/tar.gz/v0.9.16 | tar xzf - && \
   curl ftp://ftp.csx.cam.ac.uk/pub/software/programming/pcre/pcre-8.37.tar.gz | tar xzf - && \
   curl http://www.lua.org/ftp/lua-5.1.5.tar.gz | tar xzf - && \
   cd lua-5.1.5 && sed -i 's/CC= gcc//' src/Makefile && make bsd && make install && make clean && cd .. && \
-  make && cp bin/nginx /usr/local/bin && make clean && \
+  cd nginx-1.9.2 && \
+  ./configure \
+  --conf-path=/data/conf/nginx.conf \
+  --sbin-path=/none \
+  --pid-path=/tmp/nginx.pid \
+  --lock-path=/tmp/nginx.lock \
+  --error-log-path=/tmp/error.log \
+  --http-log-path=/tmp/access.log \
+  --http-client-body-temp-path=/tmp/client-body \
+  --http-proxy-temp-path=/tmp/proxy \
+  --http-fastcgi-temp-path=/tmp/fastcgi \
+  --http-scgi-temp-path=/tmp/scgi \
+  --http-uwsgi-temp-path=/tmp/uwsgi \
+  --with-ipv6 \
+  --add-module=${DEVEL_KIT_PATH} \
+  --add-module=${LUA_MOD_PATH} \
+  --with-pcre=${PCRE_PATH} \
+  && make && \
+  cp objs/nginx /usr/local/bin && make clean && cd .. && \
   rm -rf ngx_devel_kit-0.2.19 lua-nginx-module-0.9.15 pcre-8.37
