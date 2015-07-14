@@ -55,4 +55,4 @@ ENV RUMP_VERBOSE=1
 
 EXPOSE 80
 
-CMD ["/usr/src/rump-nginx-lua/nginx.sh"]
+CMD ["rexec", "nginx", "-nx", "-ro", "fs.img", "-rw", "docker:eth0", "--", "-c", "/data/conf/nginx.conf"]
