@@ -25,7 +25,7 @@ RUN \
   curl https://codeload.github.com/openresty/lua-nginx-module/tar.gz/v0.9.16 | tar xzf - && \
   curl ftp://ftp.csx.cam.ac.uk/pub/software/programming/pcre/pcre-8.37.tar.gz | tar xzf - && \
   curl http://www.lua.org/ftp/lua-5.1.5.tar.gz | tar xzf - && \
-  cd lua-5.1.5 && sed -i 's/CC= gcc//' src/Makefile && make bsd && make install && make clean && cd .. && \
+  cd lua-5.1.5 && sed -i 's/CC= gcc//' src/Makefile && make bsd && make install && cp src/lua /usr/local/bin/rump.lua && cd .. && \
   cd nginx-1.9.2 && \
   ./configure \
   --conf-path=/data/conf/nginx.conf \
