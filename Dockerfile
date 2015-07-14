@@ -46,3 +46,13 @@ RUN \
   && make && \
   cp objs/nginx /usr/local/bin && make clean && cd .. && \
   rm -rf ngx_devel_kit-0.2.19 lua-nginx-module-0.9.15 pcre-8.37
+
+ENV SUDO_UID=1000
+
+RUN ./image.sh
+
+ENV RUMP_VERBOSE=1
+
+EXPOSE 80
+
+CMD ["/usr/src/rump-nginx-lua/nginx.sh"]

@@ -11,3 +11,8 @@ and [Rump Kernels](http://rumpkernel.org).
 ```
 docker pull justincormack/rump-nginx
 ```
+
+There is a default config file so you can run
+```
+docker run -d --cap-add NET_ADMIN -P justincormack/rump-nginx-lua
+```
